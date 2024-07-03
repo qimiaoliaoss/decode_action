@@ -1,5 +1,5 @@
 /**
- * @平行绳 飞机频道：https://t.me/tigerorrose
+ * @平行绳 飞机频道：https://t.me/tigerorrose 
  * 变量：ELE_CARME：自己购买的卡密
  * 定时随意，每天跑一遍就可以
  * cron: 0 22 * * *
